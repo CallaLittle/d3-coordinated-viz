@@ -24,6 +24,9 @@ function setMap() {
 		.scale(2500)
 		.translate([width/2, height/2]);
 
+	var path = d3.geo.path()
+        .projection(projection);
+
 	d3_queue.queue()
 		.defer(d3.csv, csvData)
 		.defer(d3.json, geoData)
@@ -32,6 +35,11 @@ function setMap() {
 	function callback(error, csvData, geoData) {
 		var states = topojson.feature(geoData, geoData.objects.ne_50m_admin_1_states_provinces_lakes).features;
 		console.log(states);
+
+		var statesUS = map.append("path")
+            .datum(states)
+            .attr("class", "states")
+            .attr("d", path);
 	};
 };
 
