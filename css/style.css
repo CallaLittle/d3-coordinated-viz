@@ -1,1 +1,14 @@
 /* 575 boilerplate style.css */
+
+.map {
+	stroke: white;
+	stroke-width: .3px;
+	fill: gray;
+}
+
+#content {
+	display: block;
+    width: 100%;
+    text-align: center;
+    padding-top: 2cm
+}
