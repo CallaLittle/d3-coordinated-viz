@@ -7,6 +7,8 @@
 	var geoData = 'data/50Reshaped.topojson';
 	var width = 730;
 	var height = 470;
+	var chartWidth = 550;
+	var chartHeight = 460;
 	var csvAttributeArray = ['average_debt', 'average_tuition', 'default_rate', 'five_year_tuition_change', 'median_income', 'percent_with_debt', 'unemployment_rate'];
 	var expressed = csvAttributeArray[0];
 
@@ -39,9 +41,11 @@
 
 			joinData(states, csvData);
 
-			var colorScale = makeColorScale();
+			var colorScale = makeColorScale(csvData);
 
 			drawStates(map, states, path, colorScale);
+
+			setChart(csvData, colorScale);
 
 		};
 	};
@@ -64,7 +68,6 @@
 
 						var val = parseFloat(csvLocation[attr]);
 						jsonProps[attr] = val;
-						console.log(true)
 
 					});
 
@@ -75,7 +78,7 @@
 
 	};
 
-	function makeColorScale() {
+	function makeColorScale(csvData) {
 
 		var colorClasses = [
 			"#D4B9DA",
@@ -88,13 +91,30 @@
 		var colorScale = d3.scale.quantile()
 			.range(colorClasses);
 
-		var domainArray = [];
-		for(var i = 0; i < csvData.length; i++) {
-			var val = parseFloat(csvData[i][expressed]);
-			domainArray.push(val);
-		};
+		// var domainArray = [];
 
-		colorScale.domain(domainArray);
+		// for(var i = 0; i < csvData.length; i++) {
+		// 	var val = parseFloat(csvData[i][expressed]);
+		// 	domainArray.push(val);
+		// };
+
+		// var clusters = ss.ckmeans(domainArray, 5);
+		// console.log(clusters)
+
+		// domainArray = clusters.map(function(d) {
+		// 	return d3.min(d);
+		// });
+
+		// domainArray.shift();
+
+		// colorScale.domain(domainArray);
+
+		var minmax = [
+	        d3.min(csvData, function(d) { return parseFloat(d[expressed]); }),
+	        d3.max(csvData, function(d) { return parseFloat(d[expressed]); })
+	    ];
+	    //assign two-value array as scale domain
+	    colorScale.domain(minmax);
 
 		return colorScale;
 
@@ -112,9 +132,18 @@
 	        })
 	        .attr("d", path)
 	        .style('fill', function(d) {
-	        	console.log(d.properties[expressed]);
 	        	return colorScale(d.properties[expressed]);
 	        });
+	};
+
+	function setChart(csvData, colorScale) {
+
+		var chart = d3.select('#content')
+			.append('svg')
+			.attr('width', chartWidth)
+			.attr('height', chartHeight)
+			.attr('class', 'chart pull-right');
+
 	};
 
 })();
