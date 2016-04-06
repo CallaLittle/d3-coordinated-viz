@@ -5,10 +5,17 @@
 	// pseudo-global variables
 	var csvData = 'data/studentDebtRenamedFields.csv';
 	var geoData = 'data/50Reshaped.topojson';
-	var width = 730;
-	var height = 470;
-	var chartWidth = 550;
-	var chartHeight = 460;
+	var width = window.innerWidth * 0.5;
+	var height = 550;
+	var chartWidth = window.innerWidth * 0.425;
+	var chartHeight = height,
+	    leftPadding = 45,
+        rightPadding = 2,
+        topBottomPadding = 5,
+        chartInnerWidth = chartWidth - leftPadding - rightPadding,
+        chartInnerHeight = chartHeight - topBottomPadding * 2,
+        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
 	var csvAttributeArray = ['average_debt', 'average_tuition', 'default_rate', 'five_year_tuition_change', 'median_income', 'percent_with_debt', 'unemployment_rate'];
 	var expressed = csvAttributeArray[0];
 
@@ -142,7 +149,74 @@
 			.append('svg')
 			.attr('width', chartWidth)
 			.attr('height', chartHeight)
-			.attr('class', 'chart pull-right');
+			.attr('class', 'chart');
+			//.attr('class', 'chart pull-right');
+
+		var chartBackground = chart.append("rect")
+	        .attr("class", "chartBackground")
+	        .attr("width", chartInnerWidth)
+	        .attr("height", chartInnerHeight)
+	        .attr("transform", translate);
+
+		var yScale = d3.scale.linear()
+			.range([0, chartHeight])
+			.domain([0, 35000]);
+
+		var bars = chart.selectAll('.bars')
+			.data(csvData)
+			.enter()
+			.append('rect')
+			.sort(function(a, b) {
+				if(isNaN(a[expressed])) {
+					return 1;
+				};
+				//console.log(a[expressed])
+				return b[expressed] - a[expressed];
+			})
+			.attr('class', function(d) {
+				return 'bars ' + d.State;
+			})
+			.attr('width', chartInnerWidth/csvData.length - 1)
+			.attr('x', function(d, i) {
+				return i * (chartInnerWidth/csvData.length) + leftPadding;
+			})
+			.attr('height', function(d) {
+				if(isNaN(d[expressed])) {
+					return 0;
+				};
+				return yScale(parseFloat(d[expressed]));
+			})
+			.attr('y', function(d) {
+				if(isNaN(d[expressed])) {
+					return 0;
+				};
+				return (chartHeight - yScale(parseFloat(d[expressed]))) + topBottomPadding;
+			})
+			.style('fill', function(d) {
+				return colorScale(d[expressed]);
+			});
+
+		var axisScale = d3.scale.linear()
+			.range([0, chartHeight])
+			.domain([35000, 0]);
+
+    	var yAxis = d3.svg.axis()
+	        .scale(axisScale)
+	        .orient("left");
+
+	    var axis = chart.append("g")
+	        .attr("class", "axis")
+	        .attr('transform', translate)
+	        .call(yAxis);
+
+	    var chartTitle = chart.append("text")
+	        .attr("x", 130)
+	        .attr("y", 40)
+	        .attr("class", "chartTitle")
+	        .text(function() {
+	        	var expressedVariable = expressed.split('_');
+	        	return expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1) + " student " + expressedVariable[1] + " in each state";
+	    	});
 
 	};
 
