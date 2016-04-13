@@ -2,13 +2,16 @@
 
 (function() {
 
+	console.log($(window).width());
+	console.log($(window).height());
+
 	// pseudo-global variables
 	var csvData = 'data/studentDebtRenamedFields.csv';
 	var geoData = 'data/50Reshaped.topojson';
-	var width = window.innerWidth * 0.5;
-	var height = 550;
-	var chartWidth = window.innerWidth * 0.425;
-	var chartHeight = height,
+	var width = $(window).width()*.7;
+	var height = $(window).height() * .7;
+	var chartWidth = $(window).width()*.7;
+	var chartHeight = $(window).height() * .2,
 	    leftPadding = 45,
         rightPadding = 2,
         topBottomPadding = 5,
@@ -54,6 +57,8 @@
 
 			setChart(csvData, colorScale);
 
+			createDropdown();
+
 		};
 	};
 
@@ -88,11 +93,11 @@
 	function makeColorScale(csvData) {
 
 		var colorClasses = [
-			"#D4B9DA",
-	        "#C994C7",
-	        "#DF65B0",
-	        "#DD1C77",
-	        "#980043"
+			"#edf8e9",
+			"#bae4b3",
+			"#74c476",
+			"#31a354",
+			"#006d2c"
 		];
 
 		var colorScale = d3.scale.quantile()
@@ -145,12 +150,11 @@
 
 	function setChart(csvData, colorScale) {
 
-		var chart = d3.select('#content')
+		var chart = d3.select('#chartContainer')
 			.append('svg')
 			.attr('width', chartWidth)
 			.attr('height', chartHeight)
-			.attr('class', 'chart');
-			//.attr('class', 'chart pull-right');
+			.attr('class', 'chart pull-right');
 
 		var chartBackground = chart.append("rect")
 	        .attr("class", "chartBackground")
@@ -209,15 +213,43 @@
 	        .attr('transform', translate)
 	        .call(yAxis);
 
-	    var chartTitle = chart.append("text")
-	        .attr("x", 130)
-	        .attr("y", 40)
+	    // var chartTitle = chart.append("text")
+	    //     .attr("x", 130)
+	    //     .attr("y", 40)
+	    //     .attr("class", "chartTitle")
+	    //     .text(function() {
+	    //     	var expressedVariable = expressed.split('_');
+	    //     	return expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1) + " student " + expressedVariable[1] + " in each state";
+	    // 	});
+
+	    var chartTitle = d3.select("#title")
 	        .attr("class", "chartTitle")
 	        .text(function() {
 	        	var expressedVariable = expressed.split('_');
-	        	return expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1) + " student " + expressedVariable[1] + " in each state";
+	        	return expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1) + " student " + expressedVariable[1] + " by state";
 	    	});
 
+	};
+
+	function createDropdown() {
+		console.log('hu')
+		var options = d3.select('.dropdown')
+			.selectAll('options')
+			.data(csvAttributeArray)
+			.enter()
+			.append('option')
+			.attr('value', function(d) {
+				return d;
+			})
+			.text(function(d) {
+				var expressedVariable = d.split('_');
+				var optionText = expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1);
+				for(var i = 1; i < expressedVariable.length; i++) {
+					optionText += " " + expressedVariable[i];
+				}
+				return optionText;
+
+			});
 	};
 
 })();
