@@ -18,6 +18,7 @@ body {
 	margin: 10px 0 0 20px;*/
 }
 
+
 /*#content {
 	display: inline-block;
     width: 100%;
@@ -37,8 +38,7 @@ body {
     display: inline-block;
     float: left
     width: 100%;
-
-
+    padding-left: 15px;
 }
 
 #title {
@@ -47,6 +47,7 @@ body {
     font-weight: bold;
     padding: 10px 0 0 0;
     text-align: center;
+    opacity: .85;
 }
 
 #chartTitle {
@@ -58,6 +59,7 @@ body {
     font-size: 25px;
     font-weight: bold;
     text-align: center;
+    opacity: .7;
    /* border: 1px solid #999;
     box-shadow: 2px 2px 4px #999;*/
 }
@@ -65,6 +67,8 @@ body {
 #panel {
     width: 25%;
     float: right;
+    padding-right: 10px
+
 }
 
 /*.chart {
@@ -105,30 +109,40 @@ body {
 }
 
 .dropdown {
-
     top: 10px;
     display: block;
     margin-left: auto;
     margin-right: auto;
     font-family: sans-serif;
     font-size: 1em;
-    font-weight: bold;
+
     padding: 2px;
     border: 1px solid #999;
     box-shadow: 1px 1px 2px #999;
 }
 
-option {
-    font-weight: normal;
+
+#variableheader{
+    margin-top: 20px;
+    text-align: center;
+
+}
+
+#variableheader h5 {
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 0;
+    opacity: .9;
+
 }
 
 .infolabel {
     position: absolute;
-/*    height: 50px;*/
-    min-width: 50px;
-    color: #fff;
-    background-color: #000;
-    border: solid thin #fff;
+/*    max-width: 50px;*/
+    color: #000;
+    background-color: #fff;
+    opacity: .9;
     padding: 5px 20px;
     text-align: center;
     top: -75px;

@@ -1,15 +1,11 @@
-/* 575 boilerplate main.js */
 
 (function() {
-
-	console.log($(window).width());
-	console.log($(window).height());
 
 	// pseudo-global variables
 	var csvData = 'data/studentDebtRenamedFields.csv';
 	var geoData = 'data/50Reshaped.topojson';
 	var width = $(window).width()*.7;
-	var height = $(window).height() * .7;
+	var height = $(window).height() * .65;
 	var chartWidth = $(window).width()*.7;
 	var chartHeight = $(window).height() * .2,
 	    leftPadding = 45,
@@ -33,9 +29,10 @@
 	var csvAttributeArray = ['average_debt', 'average_tuition', 'default_rate', 'five_year_tuition_change', 'median_income', 'percent_with_debt', 'unemployment_rate'];
 	var expressed = csvAttributeArray[0];
 
-
 	window.onload = setMap();
 
+
+	//Define the map parameters and create the map container
 	function setMap() {
 
 		var map = d3.select('#content')
@@ -45,7 +42,7 @@
 			.attr('height', height);
 
 		var projection = d3.geo.albersUsa()
-	        .scale(1000)
+	        .scale(950)
 	        .translate([width / 2, height / 2]);
 
 		var path = d3.geo.path()
@@ -56,6 +53,7 @@
 			.defer(d3.json, geoData)
 			.await(callback);
 
+		//access data, call rest of functions
 		function callback(error, csvData, geoData) {
 
 			var states = topojson.feature(geoData, geoData.objects.ne_50m_admin_1_states_provinces_lakes).features;
@@ -73,6 +71,8 @@
 		};
 	};
 
+
+	//join csv with topojson
 	function joinData(states, csvData) {
 
 		for(var i = 0; i < csvData.length; i++) {
@@ -101,48 +101,42 @@
 
 	};
 
+
+	//create a color scale for the map
 	function makeColorScale(csvData) {
 
 		var colorClasses = [
-			"#edf8e9",
-			"#bae4b3",
-			"#74c476",
-			"#31a354",
+			"#edf8fb",
+			"#b2e2e2",
+			"#66c2a4",
+			"#2ca25f",
 			"#006d2c"
 		];
 
+		// var colorClasses = [
+		// 	"#edf8e9",
+		// 	"#bae4b3",
+		// 	"#74c476",
+		// 	"#31a354",
+		// 	"#006d2c"
+		// ];
+
 		var colorScale = d3.scale.quantile()
 			.range(colorClasses);
-
-		// var domainArray = [];
-
-		// for(var i = 0; i < csvData.length; i++) {
-		// 	var val = parseFloat(csvData[i][expressed]);
-		// 	domainArray.push(val);
-		// };
-
-		// var clusters = ss.ckmeans(domainArray, 5);
-		// console.log(clusters)
-
-		// domainArray = clusters.map(function(d) {
-		// 	return d3.min(d);
-		// });
-
-		// domainArray.shift();
-
-		// colorScale.domain(domainArray);
 
 		var minmax = [
 	        d3.min(csvData, function(d) { return parseFloat(d[expressed]); }),
 	        d3.max(csvData, function(d) { return parseFloat(d[expressed]); })
 	    ];
-	    //assign two-value array as scale domain
+
 	    colorScale.domain(minmax);
 
 		return colorScale;
 
 	};
 
+
+	//draw the map enumeration units
 	function drawStates(map, states, path, colorScale) {
 
 		var statesUS = map.selectAll('.states')
@@ -165,6 +159,8 @@
 	        .on('mousemove', moveLabel);
 	};
 
+
+	//create the chart container and draw the bars
 	function setChart(csvData, colorScale) {
 
 		var chart = d3.select('#chartContainer')
@@ -205,6 +201,8 @@
 
 	};
 
+
+	//create dropdown for variable selection
 	function createDropdown(csvData) {
 		var options = d3.select('.dropdown')
 			.on('change', function() {
@@ -228,9 +226,9 @@
 			});
 	};
 
-	function updateAxis() {
 
-		console.log(dataMax)
+	//update the chart axis to reflect current data values
+	function updateAxis() {
 
 		axisScale = d3.scale.linear()
 			.range([0, chartHeight])
@@ -251,6 +249,8 @@
 
 	};
 
+
+	//change the coloring of the map enumeration units to match selected attribute
 	function changeAttribute(attribute, csvData) {
 
 		expressed = attribute;
@@ -283,6 +283,8 @@
 	    updateChart(bars, csvData.length, colorScale);
 	};
 
+
+	//change the coloring of the bars to match selected attribute
 	function updateChart(bars, n, colorScale) {
 
 		var yScale = d3.scale.linear()
@@ -323,17 +325,25 @@
 	};
 
 
-function setLabel(state, props) {
+
+	//create the pop up label
+	function setLabel(state, props) {
 
 		var expressedVariable = expressed.split('_');
 		state = state.replace('_', ' ');
-		var labelAttribute = '<h4>' + state + ' '+ expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1);
+		var labelAttribute = '<h4>' + state + '</h4><p>'+ expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1);
 
 		for(var i = 1; i < expressedVariable.length; i++) {
 			labelAttribute += " " + expressedVariable[i][0].toUpperCase() + expressedVariable[i].slice(1);
 		};
 
-		labelAttribute  += '</h4><p>' + props[expressed] + '</p>';
+		var value = props[expressed];
+
+		if(isNaN(value)) {
+			value = "No Data";
+		};
+
+		labelAttribute  += ': ' + value + '</p>';
 
 		var infolabel = d3.select('#content')
 			.append('div')
@@ -344,6 +354,9 @@ function setLabel(state, props) {
 			.html(labelAttribute);
 
 	};
+
+
+	//determine highlight appearance
 	function highlight(state, props) {
 		var selected = d3.selectAll('.' + state)
 			.style({
@@ -354,6 +367,8 @@ function setLabel(state, props) {
 		setLabel(state, props);
 	};
 
+
+	//return feature to default appearance
 	function dehighlight(state) {
 		var selected = d3.selectAll('.' + state)
 			.style({
@@ -365,9 +380,16 @@ function setLabel(state, props) {
 			.remove();
 	};
 
+
+	//move label with mouse during mouse over
 	function moveLabel() {
 
 		var labelWidth = d3.select('.infolabel')
+			.node()
+			.getBoundingClientRect()
+			.width;
+
+		var mapWidth = d3.select('#content')
 			.node()
 			.getBoundingClientRect()
 			.width;
@@ -377,9 +399,9 @@ function setLabel(state, props) {
 		var x2 = d3.event.clientX - labelWidth - 10;
 		var y2 = d3.event.clientY + 25;
 
-		var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;
+		var x = d3.event.clientX > mapWidth - labelWidth - 20 ? x2 : x1;
 
-		var y = d3.event.clientY < 75 ? y2 : y1; 
+		var y = d3.event.clientY < 170 ? y2 : y1; 
 
 		d3.select('.infolabel') 
 			.style({
