@@ -43,9 +43,9 @@ body {
 
 #title {
     font-family: sans-serif;
-    font-size: 2.5em;
+    font-size: 3em;
     font-weight: bold;
-    padding: 10px 0 0 0;
+    padding: 5px 0 0 0;
     text-align: center;
     opacity: .85;
 }
@@ -103,7 +103,7 @@ body {
 }
 
 
-.bars {
+.bar {
     stroke: #e5e5e5;
     stroke-width: .5px;
 }
@@ -115,7 +115,6 @@ body {
     margin-right: auto;
     font-family: sans-serif;
     font-size: 1em;
-
     padding: 2px;
     border: 1px solid #999;
     box-shadow: 1px 1px 2px #999;

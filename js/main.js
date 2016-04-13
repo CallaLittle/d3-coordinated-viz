@@ -7,7 +7,7 @@
 	var width = $(window).width()*.7;
 	var height = $(window).height() * .65;
 	var chartWidth = $(window).width()*.7;
-	var chartHeight = $(window).height() * .2,
+	var chartHeight = $(window).height() * .18,
 	    leftPadding = 45,
         rightPadding = 2,
         topBottomPadding = 5,
@@ -27,6 +27,7 @@
 		.domain([dataMax, dataMin]);
 
 	var csvAttributeArray = ['average_debt', 'average_tuition', 'default_rate', 'five_year_tuition_change', 'median_income', 'percent_with_debt', 'unemployment_rate'];
+
 	var expressed = csvAttributeArray[0];
 
 	window.onload = setMap();
@@ -312,19 +313,49 @@
 
 		updateAxis();
 
-		var chartTitle = d3.select("#chartTitle")
-	        .text(function() {
-				var expressedVariable = expressed.split('_');
-				var optionText = expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1);
-				for(var i = 1; i < expressedVariable.length; i++) {
-					optionText += " " + expressedVariable[i];
-				}
-				return optionText;
+		updateChartTitle();
 
-			});
+		// var chartTitle = d3.select("#chartTitle")
+	 //        .text(function() {
+		// 		var expressedVariable = expressed.split('_');
+		// 		var optionText = expressedVariable[0][0].toUpperCase() + expressedVariable[0].slice(1);
+		// 		for(var i = 1; i < expressedVariable.length; i++) {
+		// 			optionText += " " + expressedVariable[i];
+		// 		}
+		// 		return optionText;
+
+		// 	});
 	};
 
 
+	//update the title of the chart according to selected attribute
+	function updateChartTitle() {
+
+		var chartTitleArray = [
+			'Average Student Debt',
+			'Average Yearly Tuition',
+			'Loan Default Rate',
+			'Five Year Change in Tuition',
+			'Household Median Income',
+			'Percent of Graduating Seniors with Debt',
+			'State Unemployment Rate'
+		];
+
+		var expressedIndex;
+
+		for(var i = 0; i < csvAttributeArray.length; i++) {
+			if(expressed == csvAttributeArray[i]) {
+				expressedIndex = i;
+			};
+		};
+
+		console.log(expressedIndex)
+
+		var chartTitle = d3.select("#chartTitle")
+	        .text(function() {
+				return chartTitleArray[expressedIndex];
+			});
+	};
 
 	//create the pop up label
 	function setLabel(state, props) {
@@ -360,8 +391,8 @@
 	function highlight(state, props) {
 		var selected = d3.selectAll('.' + state)
 			.style({
-				'stroke': '#00c24e',
-				'stroke-width': '3'
+				'stroke': '#b5e5e5e',
+				'stroke-width': '4'
 			});
 
 		setLabel(state, props);
