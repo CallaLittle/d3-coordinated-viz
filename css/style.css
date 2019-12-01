@@ -117,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
     opacity: .9;
     padding: 5px 20px;
     text-align: center;
-    top: -75px;
+    /* top: -105px; */
 }
 
 .infolabel h4 {

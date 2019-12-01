@@ -4,16 +4,17 @@
 	// pseudo-global variables
 	var csvData = 'data/studentDebtRenamedFields.csv';
 	var geoData = 'data/50Reshaped.topojson';
-	var width = $(window).width()*.7;
-	var height = $(window).height() * .65;
-	var chartWidth = $(window).width()*.7;
+	var width = $(window).width() *.8;
+	//var height = $(window).height() * .45;
+	var height = width *.45
+	var chartWidth = $(window).width();
 	var chartHeight = $(window).height() * .18,
-	    leftPadding = 45,
+	    leftPadding = 70,
         rightPadding = 2,
-        topBottomPadding = 5,
+		topPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
-        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+        chartInnerHeight = chartHeight - topPadding * 2,
+        translate = "translate(" + leftPadding + "," + topPadding + ")";
 
     var dataMin = 0;
     var dataMax = 35000;
@@ -23,7 +24,7 @@
 			.domain([dataMin, dataMax]);
 
 	var axisScale = d3.scale.linear()
-		.range([0, chartHeight])
+		.range([0, chartHeight + topPadding])
 		.domain([dataMax, dataMin]);
 
 	var csvAttributeArray = ['average_debt', 'average_tuition', 'default_rate', 'five_year_tuition_change', 'median_income', 'percent_with_debt', 'unemployment_rate'];
@@ -39,11 +40,11 @@
 		var map = d3.select('#content')
 			.append('svg')
 			.attr('class', 'map')
-			.attr('width', width)
+			.attr('width', width )
 			.attr('height', height);
 
 		var projection = d3.geo.albersUsa()
-	        .scale(950)
+	        .scale(width)
 	        .translate([width / 2, height / 2]);
 
 		var path = d3.geo.path()
@@ -167,7 +168,7 @@
 		var chart = d3.select('#chartContainer')
 			.append('svg')
 			.attr('width', chartWidth)
-			.attr('height', chartHeight)
+			.attr('height', chartHeight + 20)
 			.attr('class', 'chart pull-right');
 
 		var chartBackground = chart.append("rect")
@@ -228,28 +229,6 @@
 	};
 
 
-	//update the chart axis to reflect current data values
-	function updateAxis() {
-
-		axisScale = d3.scale.linear()
-			.range([0, chartHeight])
-			.domain([dataMax, dataMin]);
-
-    	var yAxis = d3.svg.axis()
-	        .scale(axisScale)
-	        .orient("left");
-
-		d3.select('.axis')
-			.remove();	        
-
-	    var axis = d3.select('.chart')
-	    	.append("g")
-	        .attr("class", "axis")
-	        .attr('transform', translate)
-	        .call(yAxis);
-
-	};
-
 
 	//change the coloring of the map enumeration units to match selected attribute
 	function changeAttribute(attribute, csvData) {
@@ -305,7 +284,7 @@
 				if(isNaN(d[expressed])) {
 					return 0;
 				};
-				return (chartHeight - yScale(parseFloat(d[expressed]))) + topBottomPadding;
+				return (chartHeight - yScale(parseFloat(d[expressed]))) + topPadding;
 			})
 			.style('fill', function(d) {
 				return colorScale(d[expressed]);
@@ -327,7 +306,28 @@
 		// 	});
 	};
 
+	//update the chart axis to reflect current data values
+	function updateAxis() {
 
+		axisScale = d3.scale.linear()
+			.range([0, chartHeight])
+			.domain([dataMax, dataMin]);
+
+    	var yAxis = d3.svg.axis()
+	        .scale(axisScale)
+	        .orient("left");
+
+		d3.select('.axis')
+			.remove();	        
+
+	    var axis = d3.select('.chart')
+	    	.append("g")
+	        .attr("class", "axis")
+	        .attr('transform', translate)
+	        .call(yAxis);
+
+	};
+	
 	//update the title of the chart according to selected attribute
 	function updateChartTitle() {
 
@@ -355,6 +355,18 @@
 	        .text(function() {
 				return chartTitleArray[expressedIndex];
 			});
+	};
+
+
+	//determine highlight appearance
+	function highlight(state, props) {
+		var selected = d3.selectAll('.' + state)
+			.style({
+				'stroke': '#b5e5e5e',
+				'stroke-width': '4'
+			});
+
+		setLabel(state, props);
 	};
 
 	//create the pop up label
@@ -387,16 +399,6 @@
 	};
 
 
-	//determine highlight appearance
-	function highlight(state, props) {
-		var selected = d3.selectAll('.' + state)
-			.style({
-				'stroke': '#b5e5e5e',
-				'stroke-width': '4'
-			});
-
-		setLabel(state, props);
-	};
 
 
 	//return feature to default appearance
@@ -429,6 +431,9 @@
 		var y1 = d3.event.clientY - 75;
 		var x2 = d3.event.clientX - labelWidth - 10;
 		var y2 = d3.event.clientY + 25;
+
+		//console.log(d3.event.clientX)
+		console.log(d3.event.clientY)
 
 		var x = d3.event.clientX > mapWidth - labelWidth - 20 ? x2 : x1;
 
