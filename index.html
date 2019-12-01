@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-	    <meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <meta name="description" content="">
-	    <meta name="author" content="">
+		<meta charset="UTF-8">
+		<meta keywords="student debt, student, debt, interactive, visualization, d3, map">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="author" content="Calla Little">
+		<meta name="description" content="Student debt in the United States">
 
 	    <title>US Student Debt</title>
 
-		<!--put your external stylesheet links here-->
-		<link href="css/bootstrap.css" rel="stylesheet">
+		<!--external stylesheets-->
+		<!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
 		<!-- <link href="css/one-page-wonder.css" rel="stylesheet"> -->
+		<link href="https://fonts.googleapis.com/css?family=Lato|Raleway&display=swap" rel="stylesheet"> 
 		<link rel="stylesheet" href="css/style.css"/>
 
 		<!--[if IE<9]>
@@ -21,28 +22,37 @@
 
 	<body>
 
-		<div id="title">The Cost of Education</div>
-		<div id='chartTitle'></div>
-		<div id="wrapper">
-			<div id="content" class ="img-responsive"></div>
-			<div id="chartContainer" class ="img-responsive"></div> 
+		<div class="column">
+			<h1>The Cost of Education</h1>
+			<h2 id="chartTitle" class="mt-0 mb-0"></h2>
+			<div id="panel" class="mt-0">
+				<p>Exploring how debt and tuition may be related to income and unemployment across the US.</p>
+				<div id='variableheader'>
+					<h4 class="mb-0">Select a Variable</h4>
+				</div>
+				<select class="dropdown">
+					<!-- <option class="titleOption" disabled="true">Select Attribute</option> -->
+				</select>
+		
+			</div>
 		</div>
-
-		<div id="panel">
-			<p>Debt is a growing problem for many students graduating from US universities. Over two-thirds of students have some amount of debt when they graduate. The Institute for College Access and Success estimates that the average debt for graduating seniors is $26,000. In order to repay their debt over a 10 year period at a 3.8% interest rate, it will cost the borrower approximately $320 a month. Furthermore, over the 10 year repayment term, the borrow ends up having to repay $38,000 due to compounding interest. This limits their savings and results in them having difficulties buying a home or starting a family. This map investigates how multiple variables related to student debt and income may be related.
+		<div class="column">
+			<div id="content" ></div>
+			<div id="chartContainer"></div> 
+		</div>
+		<div class=column>
+			<p>
+				Debt is a growing problem for many students graduating from US universities. Over two-thirds of students have some amount of debt when they graduate. The Institute for College Access and Success estimates that the average debt for graduating seniors is $26,000. In order to repay their debt over a 10 year period at a 3.8% interest rate, it will cost the borrower approximately $320 a month. Furthermore, over the 10 year repayment term, the borrow ends up having to repay $38,000 due to compounding interest. This limits their savings and results in them having difficulties buying a home or starting a family.
 			</p>
-			<div id='variableheader'><h5>Select a Variable</h5></div>
-			<select class="dropdown">
-				<!-- <option class="titleOption" disabled="true">Select Attribute</option> -->
-			</select>
-
 		</div>
+
+
 
 
 		<!--External script links-->
 		<!-- jQuery -->
     	<script type="text/javascript" src="lib/bootstrap/jquery.js"></script>
-   		<script type="text/javascript" src="lib/bootstrap/bootstrap.min.js"></script>
+   		<!-- <script type="text/javascript" src="lib/bootstrap/bootstrap.min.js"></script> -->
 
 		<script type="text/javascript" src="lib/simple_statistics.min.js"></script>
 		<script type="text/javascript" src="lib/d3/d3.js"></script>

@@ -106,21 +106,21 @@
 	//create a color scale for the map
 	function makeColorScale(csvData) {
 
-		var colorClasses = [
-			"#edf8fb",
-			"#b2e2e2",
-			"#66c2a4",
-			"#2ca25f",
-			"#006d2c"
-		];
-
 		// var colorClasses = [
-		// 	"#edf8e9",
-		// 	"#bae4b3",
-		// 	"#74c476",
-		// 	"#31a354",
+		// 	"#edf8fb",
+		// 	"#b2e2e2",
+		// 	"#66c2a4",
+		// 	"#2ca25f",
 		// 	"#006d2c"
 		// ];
+
+		var colorClasses = [
+			"#DAF0B1",
+			"#CADEA4",
+			"#B2C491",
+			"#909E75",
+			"#565E46"
+		];
 
 		var colorScale = d3.scale.quantile()
 			.range(colorClasses);
@@ -403,8 +403,8 @@
 	function dehighlight(state) {
 		var selected = d3.selectAll('.' + state)
 			.style({
-				'stroke': '#e5e5e5',
-				'stroke-width': '.5px'
+				'stroke': '#FFF',
+				'stroke-width': '1px'
 			});
 
 		d3.select('.infolabel')
